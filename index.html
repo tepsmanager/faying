@@ -59,7 +59,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .set{width:100%;display:flex;justify-content:space-between;margin:10px 0}
 label{display:block;margin:12px 0 0;color:var(--mut);font-size:14px}
 label input,.mi{display:block;width:100%;box-sizing:border-box;min-height:44px;background:var(--sf2);border:1px solid var(--ln);border-radius:12px;padding:0 12px;margin-top:4px}
-input[type=range]{padding:0;background:none;border:0;accent-color:var(--al);width:100%}input[type=file]{padding:9px 12px}
+input[type=range]{padding:0;background:none;border:0;accent-color:var(--al);width:100%}input[type=file]{padding:9px 12px}label select{display:block;width:100%;margin-top:4px}
 #sheet{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9;display:flex;align-items:flex-end}
 .sh{background:var(--sf);width:100%;max-width:640px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:90vh;overflow:auto;box-sizing:border-box}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(170px + env(safe-area-inset-bottom,0px));background:var(--sf2);border:1px solid var(--ln);padding:8px 14px;border-radius:20px;font-size:14px;z-index:20}
@@ -100,7 +100,28 @@ if(r.status===429){toast('Hết lượt dịch hôm nay, mai thử lại.');brea
 if(!r.ok)throw 0;const d=await r.json();ids.forEach((i,j)=>it.cues[i].vi=d.lines[j]);sI();if(view==='play'&&P&&P.it===it)drawCues()}
 catch(e){toast('Dịch lỗi, thử lại sau.');break}}
 msg('')}
-let Q='',LF='Tất cả',tts=0,cu=null;
+let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
+const TJS='https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js';
+async function getAsr(T,size,say){if(asrM[size])return asrM[size];
+const cb=p=>{if(p.status==='progress')say('Đang tải mô hình… '+Math.round(p.progress||0)+'%')};
+T.env.allowLocalModels=false;
+if(navigator.gpu&&size!=='small'){try{asrM[size]=await T.pipeline('automatic-speech-recognition','onnx-community/whisper-'+size,{device:'webgpu',dtype:{encoder_model:'fp32',decoder_model_merged:'q4'},progress_callback:cb});return asrM[size]}catch(e){}}
+T.env.backends.onnx.wasm.proxy=true;
+asrM[size]=await T.pipeline('automatic-speech-recognition','Xenova/whisper-'+size,{dtype:'q8',progress_callback:cb});return asrM[size]}
+async function transcribe(file,size,say){
+say('Đang tải bộ nhận dạng…');const T=await import(TJS);
+say('Đang giải mã âm thanh…');
+const ac=new (window.AudioContext||window.webkitAudioContext)({sampleRate:16000}),buf=await ac.decodeAudioData(await file.arrayBuffer());
+const a=new Float32Array(buf.length),nc=buf.numberOfChannels;
+for(let c=0;c<nc;c++){const d=buf.getChannelData(c);for(let i=0;i<d.length;i++)a[i]+=d[i]/nc}
+ac.close();const pipe=await getAsr(T,size,say);
+say('Đang nhận dạng, có thể mất vài phút. Hãy giữ màn hình sáng…');
+const out=await pipe(a,{language:'chinese',task:'transcribe',return_timestamps:true,chunk_length_s:30,stride_length_s:5});
+const dur=a.length/16000,cues=[];
+(out.chunks||[]).forEach(c=>{const s=c.timestamp[0]||0,e=c.timestamp[1]==null?dur:c.timestamp[1],t=(c.text||'').trim();if(!/[\u4e00-\u9fff]/.test(t))return;
+const ss=t.replace(/([。！？!?；;])/g,'$1\u0001').split('\u0001').map(x=>x.trim()).filter(Boolean),n=ss.reduce((q,x)=>q+x.length,0);let p=s;
+ss.forEach(z=>{const d=(e-s)*z.length/n;cues.push({s:p,e:p+d,zh:z,py:py(z),vi:''});p+=d})});
+return cues}
 const I=d=>`<svg width=22 height=22 viewBox="0 0 24 24" fill=currentColor aria-hidden=true>${d}</svg>`;
 const PL='<path d="M8 5v14l11-7z"/>',PA='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>',PV='<path d="M6 5h2v14H6zM19 5v14L9 12z"/>',NX='<path d="M16 5h2v14h-2zM5 5v14l10-7z"/>';
 const hue=t=>{let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))%360;return h};
@@ -148,7 +169,7 @@ function openSh(h){$('shc').innerHTML=h;$('sheet').hidden=false}
 const closeSh=()=>$('sheet').hidden=true;
 const A={
 go(b){go(b.dataset.v)},back(){go('lib')},back2(){go('vocab')},
-add(){openSh(`<h2>Thêm nội dung</h2><label>Tên<input id=nt placeholder="Ví dụ: Podcast số 12"></label><label>Audio hoặc video<input id=nm type=file accept="audio/*,video/*"></label><label>Phụ đề tiếng Trung (.srt / .vtt)<input id=nz type=file accept=".srt,.vtt"></label><label>Phụ đề tiếng Việt (.srt / .vtt, không bắt buộc)<input id=nv type=file accept=".srt,.vtt"></label><p class=note>File lưu ngay trên máy bạn, không tải lên server. Pinyin tự tạo từ chữ Hán.</p><div class=r><button data-a=cl>Huỷ</button><button class=pri data-a=save style="flex:1">Lưu vào thư viện</button></div>`)},
+add(){openSh(`<h2>Thêm nội dung</h2><label>Tên<input id=nt placeholder="Ví dụ: Podcast số 12"></label><label>Audio hoặc video<input id=nm type=file accept="audio/*,video/*"></label><label>Phụ đề tiếng Trung (.srt / .vtt, bỏ trống để app tự nhận dạng giọng nói)<input id=nz type=file accept=".srt,.vtt"></label><label>Chất lượng nhận dạng (khi bỏ trống phụ đề)<select id=nq><option value=tiny>Nhanh, khoảng 40 MB</option><option value=base selected>Cân bằng, khoảng 75 MB</option><option value=small>Chính xác, khoảng 250 MB</option></select></label><label>Phụ đề tiếng Việt (.srt / .vtt, không bắt buộc)<input id=nv type=file accept=".srt,.vtt"></label><p class=note id=asr>File lưu ngay trên máy bạn, không tải lên server. Lần đầu nhận dạng sẽ tải mô hình về máy (cần mạng). Nên thử với đoạn ngắn 1 đến 2 phút trước.</p><div class=r><button data-a=cl>Huỷ</button><button class=pri data-a=save style="flex:1">Lưu vào thư viện</button></div>`)},
 cl:closeSh,
 tr(b){translateItem(P.it).then(drawCh)},
 async save(){const z=$('nz').files[0];if(!z){toast('Cần file phụ đề tiếng Trung.');return}
@@ -203,7 +224,15 @@ openSh(`<h2 style="margin-top:0">Hiển thị phụ đề</h2>${MD.map(([t,k,p])
 paste(){openSh(`<h2 style="margin-top:0">Dán văn bản</h2><label>Tên<input id=nt placeholder="Ví dụ: Bài đọc 1"></label><label>Đoạn tiếng Trung<textarea id=pt class=mi rows=6 style="padding:10px"></textarea></label><p class=note>App tách câu, tạo pinyin và đọc bằng giọng đọc của trình duyệt.</p><div class=r style="margin-top:12px"><button data-a=cl>Huỷ</button><button class=pri style="flex:1" data-a=savetx>Lưu vào thư viện</button></div>`)},
 savetx(){const t=$('pt').value.trim(),ss=t.replace(/([。！？!?；\n])/g,'$1\u0001').split('\u0001').map(x=>x.trim()).filter(x=>/[\u4e00-\u9fff]/.test(x));
 if(!ss.length){toast('Hãy dán đoạn có chữ Hán.');return}
-items.unshift({id:'i'+Date.now(),title:$('nt').value.trim()||ss[0].slice(0,12),demo:1,cues:ss.map((z,i)=>({s:i*4,e:i*4+3.5,zh:z,py:py(z),vi:''}))});sI();closeSh();render();toast('Đã thêm vào thư viện')}};
+items.unshift({id:'i'+Date.now(),title:$('nt').value.trim()||ss[0].slice(0,12),demo:1,cues:ss.map((z,i)=>({s:i*4,e:i*4+3.5,zh:z,py:py(z),vi:''}))});sI();closeSh();render();toast('Đã thêm vào thư viện')},
+async save(){const z=$('nz').files[0],f=$('nm').files[0],v=$('nv').files[0],say=t=>{const e=$('asr');if(e)e.textContent=t};let cues;
+if(z)cues=parse(await z.text()).map(c=>({s:c.s,e:c.e,zh:c.t,py:py(c.t),vi:''}));
+else if(f){if(asrBusy)return;asrBusy=1;try{cues=await transcribe(f,$('nq').value,say)}catch(e){say('Không nhận dạng được: '+(e&&e.message?e.message:e));asrBusy=0;return}asrBusy=0}
+else{toast('Chọn file audio/video hoặc file phụ đề.');return}
+if(!cues||!cues.length){say('Không thấy lời thoại tiếng Trung. Thử mức chất lượng cao hơn hoặc file rõ tiếng hơn.');return}
+if(v){const vr=parse(await v.text());cues.forEach(c=>{let b=null,d=1e9;vr.forEach(x=>{const k=Math.abs(x.s-c.s);if(k<d){d=k;b=x}});c.vi=b&&d<2?b.t:''})}
+const id='i'+Date.now();if(f)await idb('put',id,f);
+items.unshift({id,title:$('nt').value.trim()||(z||f).name.replace(/\.\w+$/,''),cues,m:!!f});sI();closeSh();render();toast('Đã thêm vào thư viện')}};
 const C={q(el){Q=el.value;drawLib()},seek(el){m.currentTime=+el.value},rate(el){rate=+el.value;if(P&&P.media)m.playbackRate=rate},
 mean(el){const v=vocab.find(x=>x.id===el.dataset.i);if(v){v.vi=el.value;sV()}},
 zs(el){S.zhs=+el.value;$('zv').textContent=el.value;applyS()},ss(el){S.sms=+el.value;$('sw').textContent=el.value;applyS()}};
