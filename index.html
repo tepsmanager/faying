@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#080a16">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Faying">
+<title>Faying · Học tiếng Trung bằng shadowing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Sans+SC:wght@500&family=Noto+Serif+SC:wght@600&display=swap">
+<style>
+:root{--bg:#080a16;--sf:#12152a;--sf2:#1b1f3d;--ln:#272c52;--fg:#f0f1ff;--mut:#a3a8c8;--ac:#5b63e6;--al:#9aa2ff;--rec:#f27a8a;--zf:'Noto Serif SC','Songti SC',serif;--zs:26px;--ss:15px;--zc:#f2f3ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#080a16}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+[hidden]{display:none!important}
+#w{max-width:640px;margin:0 auto;padding:12px 16px 290px}
+header{display:flex;align-items:center;gap:8px;margin:6px 0 14px}
+h1{margin:0;flex:1;font-size:26px;font-weight:600}h2{margin:20px 0 10px;font-size:17px}
+button,select,input,textarea{font:inherit;color:var(--fg)}
+button,select{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:8px 12px;min-height:44px;cursor:pointer}
+button:disabled{opacity:.4}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.cue:focus-visible,.w:focus-visible{outline:2px solid var(--al);outline-offset:2px}
+.pri,.pill{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}.pill{border-radius:22px;padding:0 18px}
+.chip[aria-pressed=true]{background:var(--ac);border-color:var(--ac);color:#fff}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:0 0 12px}.tabs .chip{border-radius:22px;flex:none;padding:0 18px}
+.card{display:flex;align-items:center;gap:8px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;margin:0 0 10px;padding:8px}
+.row{flex:1;display:flex;gap:12px;align-items:center;text-align:left;background:none;border:0;padding:4px;min-width:0}
+.thumb{flex:none;width:56px;height:56px;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;font:600 26px var(--zf)}
+.gr{display:flex;flex-direction:column;min-width:0}.gr small,.note{color:var(--mut);font-size:13px}
+.hero{position:relative;display:flex;align-items:flex-end;gap:12px;border-radius:20px;padding:16px;min-height:130px;margin:0 0 6px;overflow:hidden;color:#fff}
+.hz{position:absolute;right:64px;top:-6px;font:600 110px/1 var(--zf);opacity:.2}
+.hb{flex:1;display:flex;flex-direction:column;position:relative}.hb b{font-size:20px}.hb small{color:#e4e6ff}
+.play{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ac);border:0;color:#fff;padding:0;display:flex;align-items:center;justify-content:center}
+#pp{width:72px;height:72px}
+.srch{width:100%;text-align:left;color:var(--mut);display:flex;gap:10px;align-items:center;margin-bottom:14px;border-radius:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tiles button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;min-height:84px;border-radius:16px;font-size:14px}.tiles i{font-style:normal;font-size:22px;color:var(--al)}
+.banner{display:flex;align-items:center;gap:12px;background:var(--sf2);border:1px solid var(--ln);border-radius:16px;padding:14px;margin-bottom:12px}
+.zh{font-family:var(--zf);font-weight:600;font-size:var(--zs);line-height:1.45;color:var(--zc)}
+.py{color:var(--al);font-size:var(--ss)}.vi{color:var(--mut);font-size:var(--ss)}
+.ic{width:44px;padding:0;flex:none;color:var(--mut);background:none;border:0}
+.cue{border-left:3px solid transparent;border-radius:0 12px 12px 0;padding:10px 12px;margin:4px 0;cursor:pointer}
+.cue.on{border-left-color:var(--al);background:linear-gradient(90deg,rgba(91,99,230,.24),transparent)}
+.w{border-radius:6px;cursor:pointer}.w.sel{background:var(--ac);color:#fff}
+#m{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;width:100%;max-height:34vh;background:#000;border-radius:16px;margin-bottom:8px}
+#dock{position:fixed;left:0;right:0;bottom:0;background:var(--sf);border-top:1px solid var(--ln);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+#dock>div{max-width:640px;margin:0 auto}
+.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nv{display:flex}.nv button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;border-radius:0;color:var(--mut);font-size:12px;padding:4px 0}.nv button[aria-current]{color:var(--al);font-weight:600}
+.ab-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.ab{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--mut);padding:4px 0;font-size:12px}.ab span{font-size:20px;line-height:1}.ab.on{color:var(--al)}[data-a=rec].on{color:var(--rec)}
+.wsh{background:var(--sf2);border:1px solid var(--ln);border-radius:18px;padding:14px;margin-bottom:8px}
+.tag{border:1px solid var(--al);color:var(--al);border-radius:8px;padding:2px 10px;font-size:13px}
+.opt{display:block;width:100%;text-align:left;margin-bottom:8px}.opt small{display:block;color:var(--mut)}.opt.on{border:2px solid var(--al);background:var(--sf2)}
+.sw{width:40px;height:40px;border-radius:50%;padding:0;min-height:40px}.sw[aria-pressed=true]{outline:3px solid var(--al);outline-offset:2px}
+.ring{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}.ring>div{width:74px;height:74px;border-radius:50%;background:var(--sf);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring small,.stat small{color:var(--mut);font-size:12px}.stat{background:var(--sf2);border-radius:12px;padding:10px}.stat b{display:block;font-size:20px}
+.set{width:100%;display:flex;justify-content:space-between;margin:10px 0}
+label{display:block;margin:12px 0 0;color:var(--mut);font-size:14px}
+label input,.mi{display:block;width:100%;box-sizing:border-box;min-height:44px;background:var(--sf2);border:1px solid var(--ln);border-radius:12px;padding:0 12px;margin-top:4px}
+input[type=range]{padding:0;background:none;border:0;accent-color:var(--al);width:100%}input[type=file]{padding:9px 12px}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9;display:flex;align-items:flex-end}
+.sh{background:var(--sf);width:100%;max-width:640px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:90vh;overflow:auto;box-sizing:border-box}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(170px + env(safe-area-inset-bottom,0px));background:var(--sf2);border:1px solid var(--ln);padding:8px 14px;border-radius:20px;font-size:14px;z-index:20}
+</style></head>
+<body>
+<div id="w"><video id="m" playsinline hidden></video><div id="app"></div></div>
+<div id="dock"></div><div id="sheet" hidden><div class="sh" id="shc"></div></div><div id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.6"></script>
+<script>
+const $=id=>document.getElementById(id),m=$('m'),app=$('app'),dock=$('dock');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const L=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const Sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const idb=(o,k,v)=>new Promise(r=>{try{const q=indexedDB.open('ez',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>{const s=q.result.transaction('f',o==='get'?'readonly':'readwrite').objectStore('f'),x=o==='get'?s.get(k):o==='put'?s.put(v,k):s.delete(k);x.onsuccess=()=>r(x.result);x.onerror=()=>r()};q.onerror=()=>r()}catch(e){r()}});
+const FF={serif:"'Noto Serif SC','Songti SC',serif",sans:"'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif",kai:"'KaiTi','Kaiti SC','STKaiti','Noto Serif SC',serif"};
+const SAMPLE=[["你好，我叫小明，很高兴认识你。","Nǐ hǎo, wǒ jiào Xiǎo Míng, hěn gāoxìng rènshi nǐ.","Xin chào, mình tên là Tiểu Minh, rất vui được làm quen với bạn."],["你是哪国人？","Nǐ shì nǎ guó rén?","Bạn là người nước nào?"],["我是越南人，现在在学中文。","Wǒ shì Yuènán rén, xiànzài zài xué Zhōngwén.","Mình là người Việt Nam, bây giờ đang học tiếng Trung."],["你的中文说得真好！","Nǐ de Zhōngwén shuō de zhēn hǎo!","Tiếng Trung của bạn nói giỏi thật!"],["哪里哪里，我还要多练习。","Nǎlǐ nǎlǐ, wǒ hái yào duō liànxí.","Đâu có đâu có, mình còn phải luyện tập nhiều."],["明天一起去喝咖啡吧？","Míngtiān yìqǐ qù hē kāfēi ba?","Ngày mai cùng đi uống cà phê nhé?"],["好啊，几点见面？","Hǎo a, jǐ diǎn jiànmiàn?","Được chứ, mấy giờ gặp nhau?"],["下午三点，不见不散。","Xiàwǔ sān diǎn, bú jiàn bú sàn.","Ba giờ chiều, không gặp không về."]];
+let items=L('ez.items',null),vocab=L('ez.vocab',[]),S=Object.assign({zhf:'serif',zhs:26,sms:15,sh:{zh:1,py:1,vi:0}},L('ez.set',{}));
+if(!items){items=[{id:'demo',title:'初次见面 (bài mẫu)',demo:1,cues:SAMPLE.map((r,i)=>({s:i*4,e:i*4+3.5,zh:r[0],py:r[1],vi:r[2]}))}];Sv('ez.items',items)}
+let view='home',P=null,R=null,VF='Tất cả',cur=0,loop=0,rate=1,stopAt=null,onDone=null,mine=null,mr=null,murl=null,tt;
+const sI=()=>Sv('ez.items',items),sV=()=>Sv('ez.vocab',vocab);
+const toast=t=>{const e=$('toast');e.textContent=t;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>e.hidden=true,2200)};
+const msg=t=>{const e=$('st');if(e)e.textContent=t};
+const applyS=()=>{const r=document.documentElement.style;r.setProperty('--zf',FF[S.zhf]);r.setProperty('--zs',S.zhs+'px');r.setProperty('--ss',S.sms+'px');r.setProperty('--zc',S.sc||'#f2f3ff');Sv('ez.set',S)};
+const py=t=>{try{return window.pinyinPro?pinyinPro.pinyin(t):''}catch(e){return ''}};
+const seg=t=>{try{return[...new Intl.Segmenter('zh',{granularity:'word'}).segment(t)].map(x=>x.segment)}catch(e){return Array.from(t)}};
+const mmss=s=>{s=Math.floor(s);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const st=v=>v.lv?v.lv<3?'Đang ôn':'Thuộc':'Mới';
+const T=s=>s.replace(',','.').split(':').map(parseFloat).reduce((a,v)=>a*60+v,0);
+function parse(x){return x.replace(/\r/g,'').split(/\n\s*\n/).map(b=>{const l=b.split('\n'),k=l.findIndex(z=>z.includes('-->'));if(k<0)return null;const p=l[k].split('-->');return{s:T(p[0].trim()),e:T(p[1].trim().split(/\s/)[0]),t:l.slice(k+1).join(' ').replace(/<[^>]+>/g,'').trim()}}).filter(c=>c&&c.t)}
+const speak=t=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=rate;speechSynthesis.speak(u)};
+const PROXY_URL='';
+async function translateItem(it){
+if(!PROXY_URL){toast('Chưa cấu hình máy chủ dịch (PROXY_URL).');return}
+const todo=it.cues.map((c,i)=>i).filter(i=>!it.cues[i].vi);
+for(let k=0;k<todo.length;k+=20){const ids=todo.slice(k,k+20);msg('Đang dịch '+Math.min(k+20,todo.length)+'/'+todo.length+'…');
+try{const r=await fetch(PROXY_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({lines:ids.map(i=>it.cues[i].zh)})});
+if(r.status===429){toast('Hết lượt dịch hôm nay, mai thử lại.');break}
+if(!r.ok)throw 0;const d=await r.json();ids.forEach((i,j)=>it.cues[i].vi=d.lines[j]);sI();if(view==='play'&&P&&P.it===it)drawCues()}
+catch(e){toast('Dịch lỗi, thử lại sau.');break}}
+msg('')}
+let Q='',LF='Tất cả',tts=0,cu=null;
+const I=d=>`<svg width=22 height=22 viewBox="0 0 24 24" fill=currentColor aria-hidden=true>${d}</svg>`;
+const PL='<path d="M8 5v14l11-7z"/>',PA='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>',PV='<path d="M6 5h2v14H6zM19 5v14L9 12z"/>',NX='<path d="M16 5h2v14h-2zM5 5v14l10-7z"/>';
+const hue=t=>{let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))%360;return h};
+const bg=id=>{const h=hue(id);return`background:linear-gradient(135deg,hsl(${h} 55% 38%),hsl(${(h+50)%360} 60% 20%))`};
+const setPP=()=>{const b=$('pp');if(b)b.innerHTML=I((P&&P.media?!m.paused:tts)?PA:PL)};m.onplay=m.onpause=setPP;
+function prog(t){const r=$('pr');if(r&&document.activeElement!==r){r.max=m.duration||1;r.value=t}const e=$('tm');if(e)e.textContent=mmss(t)+' / '+mmss(m.duration||0)}
+function addV(z,mean,type,c){if(vocab.some(v=>v.zh===z&&v.sid===P.it.id)){toast('Đã có trong từ vựng.');return}vocab.unshift({id:'v'+Date.now(),zh:z,py:py(z),vi:mean,type,sid:P.it.id,src:P.it.title,t:c.s,ctx:c.zh,cv:c.vi||'',lv:0,due:Date.now()});sV();toast('Đã lưu vào Từ vựng')}
+const itemRow=it=>`<div class=card><button class=row data-a=open data-i="${it.id}"><span class=thumb style="${bg(it.id)}">${esc(Array.from(it.title)[0])}</span><span class=gr><b>${esc(it.title)}</b><small>${it.cues.length} câu · ${vocab.filter(v=>v.sid===it.id).length} mục đã lưu${it.m?'':' · giọng đọc'}</small></span></button><button class=ic data-a=del data-i="${it.id}" aria-label="Xoá">✕</button></div>`;
+function drawLib(){$('ll').innerHTML=items.filter(x=>(LF==='Tất cả'||(LF==='Đã nghe')===!!x.seen)&&x.title.toLowerCase().includes(Q.toLowerCase())).map(itemRow).join('')||'<p class=note>Chưa có nội dung phù hợp.</p>'}
+function stopAll(){tts=0;if(window.speechSynthesis)speechSynthesis.cancel();m.pause();stopAt=null;onDone=null;if(mine)mine.pause()}
+function go(v){if(view==='play'&&P){P.it.last=cur;sI()}stopAll();view=v;render()}
+function render(){m.hidden=true;({home:vHome,lib:vLib,vocab:vVoc,me:vMe,play:vPlay,rev:vRev})[view]();window.scrollTo(0,0)}
+function nav(){dock.hidden=false;dock.innerHTML=`<div class=nv>${[['home','Trang chủ','<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>'],['lib','Thư viện','<path d="M5 4h6v16H5zM13 4h6v16h-6z"/>'],['vocab','Từ vựng','<path fill-rule=evenodd d="M4 5h16v14H4zM7 9h10v2H7zM7 13h6v2H7z"/>'],['me','Cá nhân','<circle cx=12 cy=8 r=4 /><path d="M4 21a8 8 0 0 1 16 0z"/>']].map(([k,t,p])=>`<button data-a=go data-v=${k} ${view===k?'aria-current=page':''}>${I(p)}<span>${t}</span></button>`).join('')}</div>`}
+function vHome(){nav();const it=items.find(x=>x.id===S.lastId)||items[0],due=vocab.filter(v=>v.due<=Date.now()).length;
+app.innerHTML=`<header><div style="flex:1"><div class=note>Chào bạn!</div><h1>Faying</h1></div></header><button class=srch data-a=go data-v=lib>${I('<circle cx=11 cy=11 r=6 fill=none stroke=currentColor stroke-width=2 /><path d="m16 16 4 4" stroke=currentColor stroke-width=2 />')} Tìm nội dung của bạn…</button>${it?`<div class=hero style="${bg(it.id)}"><div class=hz>${esc(Array.from(it.title)[0])}</div><div class=hb><small>Tiếp tục nghe</small><b>${esc(it.title)}</b><small>${it.cues.length} câu</small></div><button class=play aria-label="Phát" data-a=open data-i="${it.id}">${I(PL)}</button></div>`:''}<h2>Thêm nội dung</h2><div class=tiles><button data-a=add><i>⇪</i>Tải file</button><button data-a=paste><i>✎</i>Dán văn bản</button><button data-a=rev ${due?'':'disabled'}><i>↻</i>Ôn từ (${due})</button></div><h2>Gần đây</h2>${items.slice(0,3).map(itemRow).join('')||'<p class=note>Chưa có nội dung.</p>'}`}
+function vLib(){nav();app.innerHTML=`<header><h1>Thư viện</h1><button class=pill data-a=add>+ Thêm</button></header><input class=mi data-c=q placeholder="Tìm nội dung…" value="${esc(Q)}" aria-label="Tìm"><div class=tabs style="margin:10px 0">${['Tất cả','Đã nghe','Chưa nghe'].map(t=>`<button class=chip data-a=lf data-t="${t}" aria-pressed=${LF===t}>${t}</button>`).join('')}</div><div id=ll></div>`;drawLib()}
+async function openItem(id,ci){const it=items.find(x=>x.id===id);if(!it){toast('Nội dung gốc đã bị xoá.');return}stopAll();P={it,media:0,sel:null,from:view};it.seen=1;S.lastId=id;applyS();sI();cur=ci!=null?ci:(it.last||0);m.removeAttribute('src');if(it.m){const f=await idb('get',id);if(f){if(murl)URL.revokeObjectURL(murl);murl=URL.createObjectURL(f);m.src=murl;P.media=1}}view='play';render();setTimeout(()=>mark(cur),60)}
+function vPlay(){dock.hidden=false;m.hidden=!P.media;const it=P.it;
+app.innerHTML=`<header><button class=ic data-a=back aria-label="Quay lại">‹</button><b style="flex:1;text-align:center">${esc(it.title)}</b><button class=ic data-a=sub aria-label="Hiển thị phụ đề">Aa</button></header>${P.media?'':`<div class=hero style="${bg(it.id)}"><div class=hz>${esc(Array.from(it.title)[0])}</div><div class=hb><small>Giọng đọc của trình duyệt</small><b>${esc(it.title)}</b></div></div>`}<div class=r style="justify-content:space-between;margin:8px 0"><span class=note id=tm>${P.media?'00:00 / 00:00':'Chạm vào câu để nghe'}</span><button class=chip data-a=rt>${rate}x</button></div>${P.media?'<input type=range id=pr min=0 max=1 step=0.1 value=0 data-c=seek aria-label="Tua">':''}<div class=r style="justify-content:center;gap:20px;margin:6px 0 12px"><button class=ic data-a=pv aria-label="Câu trước">${I(PV)}</button><button class=play id=pp data-a=pp aria-label="Phát hoặc dừng">${I(PL)}</button><button class=ic data-a=nx aria-label="Câu sau">${I(NX)}</button></div><div class=tabs id=ch></div><div id=st class=note></div><div id=cl></div>`;
+dock.innerHTML=`<div><div id=ws></div><div class=ab-row><button class=ab data-a=rec><span>●</span>Ghi âm</button><button class="ab${loop?' on':''}" data-a=lp><span>↻</span>Lặp lại</button><button class=ab data-a=cp><span>⇄</span>So sánh</button><button class=ab data-a=sc><span>☆</span>Lưu câu</button></div></div>`;
+drawCh();drawCues();if(!window.pinyinPro)msg('Chưa tải được thư viện pinyin.')}
+function drawCh(){$('ch').innerHTML=[['zh','Phụ đề'],['py','Pinyin'],['vi','Dịch']].map(([k,t])=>`<button class=chip data-a=lay data-k=${k} aria-pressed=${!!S.sh[k]}>${t}</button>`).join('')}
+const zhHtml=(c,ci)=>seg(c.zh).map((w,wi)=>/[\u4e00-\u9fff]/.test(w)?`<span class="w${P.sel&&P.sel.ci===ci&&P.sel.ws.includes(wi)?' sel':''}" tabindex=0 data-a=w data-i=${ci} data-w=${wi}>${esc(w)}</span>`:esc(w)).join('');
+function drawCues(){$('cl').innerHTML=P.it.cues.map((c,i)=>`<div class="cue${i===cur?' on':''}" tabindex=0 data-a=cue data-i=${i}>${S.sh.zh?`<div class=zh>${zhHtml(c,i)}</div>`:''}${S.sh.py?`<div class=py>${esc(c.py)}</div>`:''}${S.sh.vi?`<div class=vi>${esc(c.vi||'—')}</div>`:''}</div>`).join('')}
+const selTxt=()=>{const w=seg(P.it.cues[P.sel.ci].zh);return P.sel.ws.map(i=>w[i]).join('')};
+function drawWs(){const e=$('ws');if(!P.sel){e.innerHTML='';return}const t=selTxt(),c=P.it.cues[P.sel.ci];e.innerHTML=`<div class=wsh><div class=r><span class=zh style="font-size:calc(var(--zs)*1.3)">${esc(t)}</span><button class=ic data-a=sayw aria-label="Phát âm">♪</button><span style="flex:1"></span><span class=tag>${P.sel.ws.length>1?'Cụm':'Từ'}</span></div><div class=py>${esc(py(t))}</div><input class=mi id=wm placeholder="Nghĩa tiếng Việt (tuỳ chọn)"><div class=note style="margin:8px 0">Ví dụ: ${esc(c.zh)}${c.vi?' · '+esc(c.vi):''}</div><button class=pri style="width:100%" data-a=sv data-t=w>Thêm vào từ vựng</button></div>`}
+function mark(i){cur=i;const cl=$('cl');if(!cl)return;[...cl.children].forEach((d,k)=>d.classList.toggle('on',k===i));const el=cl.children[i];if(el)el.scrollIntoView({block:'center',behavior:'smooth'})}
+function playCue(i,cb,once){stopAll();mark(i);const c=P.it.cues[i];
+if(P.media){m.currentTime=c.s;m.playbackRate=rate;stopAt=(cb||once)?c.e:null;onDone=cb||null;m.play()}
+else if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(c.zh);u.lang='zh-CN';u.rate=rate;cu=u;tts=1;setPP();u.onend=()=>{if(cu===u){tts=0;setPP();if(cb)cb()}};speechSynthesis.speak(u)}
+else msg('Trình duyệt không hỗ trợ giọng đọc.')}
+setInterval(()=>{if(view!=='play'||!P||!P.media)return;const t=m.currentTime,cs=P.it.cues;prog(t);
+if(stopAt!=null){if(t>=stopAt){m.pause();stopAt=null;const f=onDone;onDone=null;if(f)f()}return}
+if(m.paused)return;if(loop&&cs[cur]&&t>=cs[cur].e){m.currentTime=cs[cur].s;return}
+const i=cs.findIndex(c=>t>=c.s&&t<c.e);if(i>=0&&i!==cur)mark(i)},60);
+function vVoc(){nav();const due=vocab.filter(v=>v.due<=Date.now()).length,ls=vocab.filter(v=>VF==='Tất cả'||(VF==='★'?v.fav:v.type===VF));
+app.innerHTML=`<header><h1>Từ vựng</h1></header><div class=tabs>${['Tất cả','Từ','Cụm','Câu','★'].map(t=>`<button class=chip data-a=vf data-t="${t}" aria-pressed=${VF===t}>${t}</button>`).join('')}</div><div class=banner><div style="flex:1"><b>Ôn hôm nay</b><div class=note>${due} mục đến hạn ôn</div></div><button class=pri data-a=rev ${due?'':'disabled'}>Bắt đầu ôn</button></div>`+(ls.length?ls.map(v=>`<div class=card style="display:block;padding:12px"><div class=r style="flex-wrap:nowrap"><span class=thumb style="${bg(v.id)};width:44px;height:44px;font-size:22px">${esc(Array.from(v.zh)[0])}</span><div class=gr style="flex:1"><div class=r style="align-items:baseline;gap:8px"><span class=zh style="font-size:calc(var(--zs)*.85)">${esc(v.zh)}</span><span class=py>${esc(v.py)}</span></div><small class=note>${v.type} · ${st(v)}</small></div><button class=ic data-a=say data-i="${v.id}" aria-label="Phát âm">♪</button><button class=ic data-a=fav data-i="${v.id}" aria-label="Yêu thích" style="color:${v.fav?'#f2c14e':'var(--mut)'}">${v.fav?'★':'☆'}</button></div><input class=mi data-c=mean data-i="${v.id}" value="${esc(v.vi)}" placeholder="Thêm nghĩa tiếng Việt…" aria-label="Nghĩa"><div class=r style="margin-top:6px"><button data-a=jump data-i="${v.id}">▶ ${esc(v.src)} · ${mmss(v.t)}</button><span style="flex:1"></span><button class=ic data-a=dv data-i="${v.id}" aria-label="Xoá">✕</button></div></div>`).join(''):'<p class=note>Chưa có mục nào. Trong trình phát, chạm vào chữ Hán (chạm nhiều chữ liền nhau để lưu cụm) rồi bấm Thêm vào từ vựng.</p>')}
+function vRev(){dock.hidden=true;
+if(!R.q.length){app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</button></header><p class=zh style="text-align:center">Hết lượt ôn hôm nay.</p>`;return}
+const v=vocab.find(x=>x.id===R.q[0]);
+app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</button><span class=note style="flex:1;text-align:right">Còn ${R.q.length}</span></header><div class=card style="display:block;text-align:center;padding:28px 16px"><div class=zh style="font-size:calc(var(--zs)*1.6)">${esc(v.zh)}</div>${R.f?`<div class=py style="margin-top:8px">${esc(v.py)}</div><div style="margin-top:6px">${esc(v.vi||'(chưa có nghĩa, thêm ở màn Từ vựng)')}</div><div class=note style="margin-top:14px">${esc(v.ctx)}${v.cv?'<br>'+esc(v.cv):''}</div>`:''}</div>`+(R.f?`<div class=r><button style="flex:1" data-a=again>Chưa nhớ</button><button class=pri style="flex:1" data-a=good>Nhớ rồi</button></div>`:`<button class=pri style="width:100%" data-a=flip>Hiện đáp án</button>`)}
+function vMe(){nav();const tot=vocab.length,dn=vocab.filter(v=>v.lv>=3).length,p=tot?Math.round(dn/tot*100):0,due=vocab.filter(v=>v.due<=Date.now()).length;
+app.innerHTML=`<header><h1>Cá nhân</h1></header><div class=card style="gap:16px;padding:16px"><div class=ring style="background:conic-gradient(var(--ac) ${p}%,var(--sf2) 0)"><div><b>${p}%</b><small>đã thuộc</small></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">${[[items.length,'Nội dung'],[tot,'Đã lưu'],[dn,'Đã thuộc'],[due,'Đến hạn ôn']].map(([n,t])=>`<div class=stat><b>${n}</b><small>${t}</small></div>`).join('')}</div></div><h2>Hiển thị</h2><div class=card style="display:block;padding:16px"><div class=zh>我想学中文。</div><div class=py>Wǒ xiǎng xué Zhōngwén.</div><div class=vi>Mình muốn học tiếng Trung.</div></div><button class=set data-a=sub>Kiểu phụ đề, phông, màu<span>›</span></button><label>Cỡ chữ Hán: <b id=zv>${S.zhs}</b> px<input type=range min=18 max=48 value=${S.zhs} data-c=zs></label><label>Cỡ pinyin và tiếng Việt: <b id=sw>${S.sms}</b> px<input type=range min=12 max=24 value=${S.sms} data-c=ss></label><h2>Dữ liệu</h2><p class=note>Mọi thứ được lưu ngay trên thiết bị này.</p><button data-a=wipe>Xoá toàn bộ dữ liệu</button>`}
+function openSh(h){$('shc').innerHTML=h;$('sheet').hidden=false}
+const closeSh=()=>$('sheet').hidden=true;
+const A={
+go(b){go(b.dataset.v)},back(){go('lib')},back2(){go('vocab')},
+add(){openSh(`<h2>Thêm nội dung</h2><label>Tên<input id=nt placeholder="Ví dụ: Podcast số 12"></label><label>Audio hoặc video<input id=nm type=file accept="audio/*,video/*"></label><label>Phụ đề tiếng Trung (.srt / .vtt)<input id=nz type=file accept=".srt,.vtt"></label><label>Phụ đề tiếng Việt (.srt / .vtt, không bắt buộc)<input id=nv type=file accept=".srt,.vtt"></label><p class=note>File lưu ngay trên máy bạn, không tải lên server. Pinyin tự tạo từ chữ Hán.</p><div class=r><button data-a=cl>Huỷ</button><button class=pri data-a=save style="flex:1">Lưu vào thư viện</button></div>`)},
+cl:closeSh,
+tr(b){translateItem(P.it).then(drawCh)},
+async save(){const z=$('nz').files[0];if(!z){toast('Cần file phụ đề tiếng Trung.');return}
+const cues=parse(await z.text()).map(c=>({s:c.s,e:c.e,zh:c.t,py:py(c.t),vi:''}));if(!cues.length){toast('Không đọc được phụ đề.');return}
+const v=$('nv').files[0];if(v){const vr=parse(await v.text());cues.forEach(c=>{let b=null,d=1e9;vr.forEach(x=>{const k=Math.abs(x.s-c.s);if(k<d){d=k;b=x}});c.vi=b&&d<2?b.t:''})}
+const f=$('nm').files[0],id='i'+Date.now();if(f)await idb('put',id,f);
+items.unshift({id,title:$('nt').value.trim()||z.name.replace(/\.\w+$/,''),cues,m:!!f});sI();closeSh();render();toast('Đã thêm vào thư viện')},
+open(b){openItem(b.dataset.i)},
+del(b){if(b.textContent!=='Xoá?'){b.textContent='Xoá?';b.style.width='72px';return}idb('del',b.dataset.i);items=items.filter(x=>x.id!==b.dataset.i);sI();vLib()},
+cue(b){playCue(+b.dataset.i)},
+w(b){const ci=+b.dataset.i,wi=+b.dataset.w;if(!P.sel||P.sel.ci!==ci)P.sel={ci,ws:[]};const a=P.sel.ws,k=a.indexOf(wi);if(k<0)a.push(wi);else a.splice(k,1);a.sort((x,y)=>x-y);if(!a.length)P.sel=null;drawCues();drawWs()},
+sayw(){speak(selTxt())},
+sv(b){const c=P.it.cues[P.sel.ci],s=b.dataset.t==='s',z=s?c.zh:selTxt(),mean=s?(c.vi||''):$('wm').value.trim();
+if(vocab.some(v=>v.zh===z&&v.sid===P.it.id)){toast('Đã có trong từ vựng.');return}
+vocab.unshift({id:'v'+Date.now(),zh:z,py:py(z),vi:mean,type:s?'Câu':P.sel.ws.length>1?'Cụm':'Từ',sid:P.it.id,src:P.it.title,t:c.s,ctx:c.zh,cv:c.vi||'',lv:0,due:Date.now()});sV();P.sel=null;drawCues();drawWs();toast('Đã lưu vào Từ vựng')},
+lay(b){const k=b.dataset.k;if(S.sh[k]&&Object.values(S.sh).filter(Boolean).length===1)return;S.sh[k]=S.sh[k]?0:1;applyS();drawCh();drawCues()},
+pre(b){S.sh={zh:0,py:0,vi:0};b.dataset.p.split(',').forEach(k=>S.sh[k]=1);applyS();drawCh();drawCues()},
+pl(){playCue(cur,null,true)},pv(){playCue(Math.max(0,cur-1),null,true)},nx(){playCue(Math.min(P.it.cues.length-1,cur+1),null,true)},
+lp(b){loop=loop?0:1;b.setAttribute('aria-pressed',!!loop)},
+cp(){if(!mine){msg('Chưa có bản ghi. Bấm Ghi âm trước.');return}playCue(cur,()=>{mine.currentTime=0;mine.play()},true);msg('Nghe bản gốc, rồi đến giọng bạn.')},
+async rec(b){if(mr&&mr.state==='recording'){mr.stop();return}
+try{stopAll();const s=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];mr=new MediaRecorder(s);mr.ondataavailable=e=>ch.push(e.data);
+mr.onstop=()=>{s.getTracks().forEach(t=>t.stop());mine=new Audio(URL.createObjectURL(new Blob(ch)));b.textContent='● Ghi âm';b.classList.remove('on');msg('Đã ghi. Bấm So sánh.')};
+mr.start();b.textContent='■ Dừng';b.classList.add('on');msg('Đang ghi, hãy đọc theo câu đang chọn.')}catch(e){msg('Không dùng được micro, hãy cấp quyền.')}},
+vf(b){VF=b.dataset.t;vVoc()},
+rev(){R={q:vocab.filter(v=>v.due<=Date.now()).map(v=>v.id),f:0};go('rev')},
+flip(){R.f=1;vRev();speak(vocab.find(x=>x.id===R.q[0]).zh)},
+good(){const v=vocab.find(x=>x.id===R.q.shift());v.lv=Math.min(5,v.lv+1);v.due=Date.now()+[0,1,3,7,14,30][v.lv]*864e5;sV();R.f=0;vRev()},
+again(){R.q.push(R.q.shift());R.f=0;vRev()},
+jump(b){const v=vocab.find(x=>x.id===b.dataset.i),it=items.find(x=>x.id===v.sid);if(!it){toast('Nội dung gốc đã bị xoá.');return}const cs=it.cues;let k=0;cs.forEach((c,i)=>{if(Math.abs(c.s-v.t)<Math.abs(cs[k].s-v.t))k=i});openItem(v.sid,k)},
+say(b){speak(vocab.find(x=>x.id===b.dataset.i).zh)},
+dv(b){if(b.textContent!=='Xoá?'){b.textContent='Xoá?';b.style.width='72px';return}vocab=vocab.filter(x=>x.id!==b.dataset.i);sV();vVoc()},
+zf(b){S.zhf=b.dataset.k;applyS();vSet()},
+wipe(b){if(b.textContent!=='Bấm lần nữa để xoá'){b.textContent='Bấm lần nữa để xoá';return}items.forEach(it=>idb('del',it.id));try{localStorage.clear()}catch(e){}location.reload()},
+back(){go(P&&P.from&&P.from!=='play'?P.from:'home')},
+pp(){if(P.media){if(m.paused){m.currentTime>.2?m.play():playCue(cur)}else m.pause()}else if(tts){stopAll();setPP()}else playCue(cur,null,true)},
+rt(b){const q=[.6,.8,1,1.2];rate=q[(q.indexOf(rate)+1)%4];if(P&&P.media)m.playbackRate=rate;b.textContent=rate+'x'},
+lp(b){loop=loop?0:1;b.classList.toggle('on',!!loop)},
+lay(b){const k=b.dataset.k;if(S.sh[k]&&Object.values(S.sh).filter(Boolean).length===1)return;S.sh[k]=S.sh[k]?0:1;if(k==='vi'&&S.sh.vi&&PROXY_URL&&P.it.cues.some(c=>!c.vi))A.tr();applyS();drawCh();drawCues()},
+sv(b){const c=P.it.cues[P.sel.ci],s=b.dataset.t==='s';addV(s?c.zh:selTxt(),s?(c.vi||''):($('wm')?$('wm').value.trim():''),s?'Câu':P.sel.ws.length>1?'Cụm':'Từ',c);P.sel=null;drawCues();drawWs()},
+sc(){const c=P.it.cues[cur];addV(c.zh,c.vi||'','Câu',c)},
+del(b){if(b.textContent!=='Xoá?'){b.textContent='Xoá?';b.style.width='72px';return}idb('del',b.dataset.i);items=items.filter(x=>x.id!==b.dataset.i);sI();render()},
+lf(b){LF=b.dataset.t;vLib()},
+fav(b){const v=vocab.find(x=>x.id===b.dataset.i);v.fav=!v.fav;sV();vVoc()},
+mode(b){S.sh={zh:0,py:0,vi:0};b.dataset.k.split(',').forEach(k=>S.sh[k]=1);applyS();if(view==='play'){drawCh();drawCues()}A.sub()},
+sz(b){S.zhs=+b.dataset.z;S.sms=+b.dataset.s;applyS();A.sub()},
+col(b){S.sc=b.dataset.col;applyS();A.sub()},
+zf(b){S.zhf=b.dataset.k;applyS();if($('sheet').hidden)vMe();else A.sub()},
+sub(){const on=Object.keys(S.sh).filter(k=>S.sh[k]).sort().join();
+const MD=[['Chỉ chữ Hán','zh','你好'],['Hán + Pinyin','zh,py','你好 · nǐ hǎo'],['Hán + Dịch','zh,vi','你好 · Xin chào'],['Hán + Pinyin + Dịch','zh,py,vi','你好 · nǐ hǎo · Xin chào'],['Pinyin + Dịch (ẩn chữ Hán)','py,vi','nǐ hǎo · Xin chào']];
+openSh(`<h2 style="margin-top:0">Hiển thị phụ đề</h2>${MD.map(([t,k,p])=>`<button class="opt${k.split(',').sort().join()===on?' on':''}" data-a=mode data-k="${k}"><b>${t}</b><small>${p}</small></button>`).join('')}<h2>Cỡ chữ</h2><div class=r>${[[20,13],[26,15],[34,18]].map(([z,t],i)=>`<button class=chip style="flex:1;font-size:${14+i*4}px" data-a=sz data-z=${z} data-s=${t} aria-pressed=${S.zhs===z} aria-label="Cỡ ${i+1}">A</button>`).join('')}</div><h2>Phông chữ Hán</h2><div class=r>${[['serif','Có chân'],['sans','Không chân'],['kai','Chữ Khải']].map(([k,t])=>`<button class=chip data-a=zf data-k=${k} aria-pressed=${S.zhf===k} style="font-family:${FF[k]}">${t}</button>`).join('')}</div><h2>Màu chữ Hán</h2><div class=r>${['#f2f3ff','#9aa2ff','#4fd1c5','#f2c14e','#f27a9a'].map(c=>`<button class=sw data-a=col data-col="${c}" aria-label="Màu ${c}" aria-pressed=${(S.sc||'#f2f3ff')===c} style="background:${c}"></button>`).join('')}</div>${PROXY_URL&&view==='play'&&P.it.cues.some(c=>!c.vi)?'<button style="width:100%;margin-top:14px" data-a=tr>Dịch Vietsub tự động</button>':''}<button class=pri style="width:100%;margin-top:14px" data-a=cl>Xong</button>`)},
+paste(){openSh(`<h2 style="margin-top:0">Dán văn bản</h2><label>Tên<input id=nt placeholder="Ví dụ: Bài đọc 1"></label><label>Đoạn tiếng Trung<textarea id=pt class=mi rows=6 style="padding:10px"></textarea></label><p class=note>App tách câu, tạo pinyin và đọc bằng giọng đọc của trình duyệt.</p><div class=r style="margin-top:12px"><button data-a=cl>Huỷ</button><button class=pri style="flex:1" data-a=savetx>Lưu vào thư viện</button></div>`)},
+savetx(){const t=$('pt').value.trim(),ss=t.replace(/([。！？!?；\n])/g,'$1\u0001').split('\u0001').map(x=>x.trim()).filter(x=>/[\u4e00-\u9fff]/.test(x));
+if(!ss.length){toast('Hãy dán đoạn có chữ Hán.');return}
+items.unshift({id:'i'+Date.now(),title:$('nt').value.trim()||ss[0].slice(0,12),demo:1,cues:ss.map((z,i)=>({s:i*4,e:i*4+3.5,zh:z,py:py(z),vi:''}))});sI();closeSh();render();toast('Đã thêm vào thư viện')}};
+const C={q(el){Q=el.value;drawLib()},seek(el){m.currentTime=+el.value},rate(el){rate=+el.value;if(P&&P.media)m.playbackRate=rate},
+mean(el){const v=vocab.find(x=>x.id===el.dataset.i);if(v){v.vi=el.value;sV()}},
+zs(el){S.zhs=+el.value;$('zv').textContent=el.value;applyS()},ss(el){S.sms=+el.value;$('sw').textContent=el.value;applyS()}};
+document.addEventListener('click',e=>{if(e.target.id==='sheet'){closeSh();return}const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b)});
+['input','change'].forEach(ev=>document.addEventListener(ev,e=>{const c=e.target.dataset&&e.target.dataset.c;if(c&&C[c])C[c](e.target)}));
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+applyS();render();
+</script></body></html>
