@@ -100,14 +100,14 @@ if(r.status===429){toast('Hết lượt dịch hôm nay, mai thử lại.');brea
 if(!r.ok)throw 0;const d=await r.json();ids.forEach((i,j)=>it.cues[i].vi=d.lines[j]);sI();if(view==='play'&&P&&P.it===it)drawCues()}
 catch(e){toast('Dịch lỗi, thử lại sau.');break}}
 msg('')}
-const VER='2026.10.14-b';let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
+const VER='2026.10.14-c',IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
 const TJS='https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js';
 async function getAsr(T,size,say){if(asrM[size])return asrM[size];
 const cb=p=>{if(p.status==='progress')say('Đang tải mô hình… '+Math.round(p.progress||0)+'%')};
 T.env.allowLocalModels=false;
-if(navigator.gpu&&size!=='small'){try{asrM[size]=await T.pipeline('automatic-speech-recognition','onnx-community/whisper-'+size,{device:'webgpu',dtype:{encoder_model:'fp32',decoder_model_merged:'q4'},progress_callback:cb});return asrM[size]}catch(e){}}
-T.env.backends.onnx.wasm.proxy=true;
-asrM[size]=await T.pipeline('automatic-speech-recognition','Xenova/whisper-'+size,{dtype:'q8',progress_callback:cb});return asrM[size]}
+if(navigator.gpu&&!IOS&&size!=='small'){try{asrM[size]=await T.pipeline('automatic-speech-recognition','onnx-community/whisper-'+size,{device:'webgpu',dtype:{encoder_model:'fp32',decoder_model_merged:'q4'},progress_callback:cb});return asrM[size]}catch(e){}}
+const mk=()=>T.pipeline('automatic-speech-recognition','Xenova/whisper-'+size,{dtype:'q8',progress_callback:cb});
+try{T.env.backends.onnx.wasm.proxy=true;asrM[size]=await mk()}catch(e){T.env.backends.onnx.wasm.proxy=false;asrM[size]=await mk()}return asrM[size]}
 async function transcribe(file,size,say){
 say('Đang tải bộ nhận dạng…');const T=await import(TJS);
 say('Đang giải mã âm thanh…');
@@ -122,6 +122,21 @@ const dur=a.length/16000,cues=[];
 const ss=t.replace(/([。！？!?；;])/g,'$1\u0001').split('\u0001').map(x=>x.trim()).filter(Boolean),n=ss.reduce((q,x)=>q+x.length,0);let p=s;
 ss.forEach(z=>{const d=(e-s)*z.length/n;cues.push({s:p,e:p+d,zh:z,py:py(z),vi:''});p+=d})});
 return cues}
+async function diag(){
+openSh('<h2 style="margin-top:0">Kiểm tra bộ nhận dạng</h2><pre id=dg style="white-space:pre-wrap;word-break:break-word;font:13px/1.5 monospace;margin:0 0 8px"></pre><div id=dp class=note></div><p class=note>Nếu có dòng ✗, hãy chụp màn hình bảng này gửi cho mình.</p><button class=pri style="width:100%" data-a=cl>Đóng</button>');
+const o=$('dg'),log=t=>{o.textContent+=t+'\n'},t0=Date.now(),el=()=>((Date.now()-t0)/1000).toFixed(1)+'s',er=e=>String(e&&e.message?e.message:e).slice(0,160);
+log('Phiên bản '+VER+' · WebGPU: '+(navigator.gpu?'có':'không')+' · iPhone/iPad: '+(IOS?'có':'không')+' · mạng: '+(navigator.onLine?'có':'không'));
+let T;try{T=await import(TJS);log('✓ Tải thư viện nhận dạng ('+el()+')')}catch(e){log('✗ Tải thư viện: '+er(e));return}
+try{const n=16000,b=new ArrayBuffer(44+n*2),d=new DataView(b),W=(p,t)=>{for(let i=0;i<t.length;i++)d.setUint8(p+i,t.charCodeAt(i))};
+W(0,'RIFF');d.setUint32(4,36+n*2,true);W(8,'WAVEfmt ');d.setUint32(16,16,true);d.setUint16(20,1,true);d.setUint16(22,1,true);d.setUint32(24,16000,true);d.setUint32(28,32000,true);d.setUint16(32,2,true);d.setUint16(34,16,true);W(36,'data');d.setUint32(40,n*2,true);
+const ac=new (window.AudioContext||window.webkitAudioContext)({sampleRate:16000}),bf=await ac.decodeAudioData(b);ac.close();log('✓ Giải mã âm thanh ('+bf.length+' mẫu)')}catch(e){log('✗ Giải mã âm thanh: '+er(e));return}
+let p;T.env.allowLocalModels=false;log('… Đang tải mô hình nhỏ (khoảng 40 MB)');
+const cb=x=>{const e=$('dp');if(e&&x.status==='progress')e.textContent='Tải mô hình: '+Math.round(x.progress||0)+'%'};
+const mk=()=>T.pipeline('automatic-speech-recognition','Xenova/whisper-tiny',{dtype:'q8',progress_callback:cb});
+try{T.env.backends.onnx.wasm.proxy=true;p=await mk();log('✓ Tải mô hình, chế độ nền ('+el()+')')}
+catch(e1){log('✗ Chế độ nền: '+er(e1));try{T.env.backends.onnx.wasm.proxy=false;p=await mk();log('✓ Tải mô hình, chế độ thường ('+el()+')')}catch(e2){log('✗ Tải mô hình: '+er(e2));return}}
+try{const out=await p(new Float32Array(32000),{language:'chinese',task:'transcribe',return_timestamps:true});log('✓ Chạy thử xong ('+el()+')')}catch(e){log('✗ Chạy nhận dạng: '+er(e));return}
+log('Tất cả các bước đều ổn.')}
 const I=d=>`<svg width=22 height=22 viewBox="0 0 24 24" fill=currentColor aria-hidden=true>${d}</svg>`;
 const PL='<path d="M8 5v14l11-7z"/>',PA='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>',PV='<path d="M6 5h2v14H6zM19 5v14L9 12z"/>',NX='<path d="M16 5h2v14h-2zM5 5v14l10-7z"/>';
 const hue=t=>{let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))%360;return h};
@@ -164,12 +179,12 @@ if(!R.q.length){app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</but
 const v=vocab.find(x=>x.id===R.q[0]);
 app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</button><span class=note style="flex:1;text-align:right">Còn ${R.q.length}</span></header><div class=card style="display:block;text-align:center;padding:28px 16px"><div class=zh style="font-size:calc(var(--zs)*1.6)">${esc(v.zh)}</div>${R.f?`<div class=py style="margin-top:8px">${esc(v.py)}</div><div style="margin-top:6px">${esc(v.vi||'(chưa có nghĩa, thêm ở màn Từ vựng)')}</div><div class=note style="margin-top:14px">${esc(v.ctx)}${v.cv?'<br>'+esc(v.cv):''}</div>`:''}</div>`+(R.f?`<div class=r><button style="flex:1" data-a=again>Chưa nhớ</button><button class=pri style="flex:1" data-a=good>Nhớ rồi</button></div>`:`<button class=pri style="width:100%" data-a=flip>Hiện đáp án</button>`)}
 function vMe(){nav();const tot=vocab.length,dn=vocab.filter(v=>v.lv>=3).length,p=tot?Math.round(dn/tot*100):0,due=vocab.filter(v=>v.due<=Date.now()).length;
-app.innerHTML=`<header><h1>Cá nhân</h1></header><div class=card style="gap:16px;padding:16px"><div class=ring style="background:conic-gradient(var(--ac) ${p}%,var(--sf2) 0)"><div><b>${p}%</b><small>đã thuộc</small></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">${[[items.length,'Nội dung'],[tot,'Đã lưu'],[dn,'Đã thuộc'],[due,'Đến hạn ôn']].map(([n,t])=>`<div class=stat><b>${n}</b><small>${t}</small></div>`).join('')}</div></div><h2>Hiển thị</h2><div class=card style="display:block;padding:16px"><div class=zh>我想学中文。</div><div class=py>Wǒ xiǎng xué Zhōngwén.</div><div class=vi>Mình muốn học tiếng Trung.</div></div><button class=set data-a=sub>Kiểu phụ đề, phông, màu<span>›</span></button><label>Cỡ chữ Hán: <b id=zv>${S.zhs}</b> px<input type=range min=18 max=48 value=${S.zhs} data-c=zs></label><label>Cỡ pinyin và tiếng Việt: <b id=sw>${S.sms}</b> px<input type=range min=12 max=24 value=${S.sms} data-c=ss></label><h2>Dữ liệu</h2><p class=note>Mọi thứ được lưu ngay trên thiết bị này.</p><button data-a=wipe>Xoá toàn bộ dữ liệu</button><p class=note>Phiên bản ${VER}</p>`}
+app.innerHTML=`<header><h1>Cá nhân</h1></header><div class=card style="gap:16px;padding:16px"><div class=ring style="background:conic-gradient(var(--ac) ${p}%,var(--sf2) 0)"><div><b>${p}%</b><small>đã thuộc</small></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">${[[items.length,'Nội dung'],[tot,'Đã lưu'],[dn,'Đã thuộc'],[due,'Đến hạn ôn']].map(([n,t])=>`<div class=stat><b>${n}</b><small>${t}</small></div>`).join('')}</div></div><h2>Hiển thị</h2><div class=card style="display:block;padding:16px"><div class=zh>我想学中文。</div><div class=py>Wǒ xiǎng xué Zhōngwén.</div><div class=vi>Mình muốn học tiếng Trung.</div></div><button class=set data-a=sub>Kiểu phụ đề, phông, màu<span>›</span></button><label>Cỡ chữ Hán: <b id=zv>${S.zhs}</b> px<input type=range min=18 max=48 value=${S.zhs} data-c=zs></label><label>Cỡ pinyin và tiếng Việt: <b id=sw>${S.sms}</b> px<input type=range min=12 max=24 value=${S.sms} data-c=ss></label><h2>Dữ liệu</h2><p class=note>Mọi thứ được lưu ngay trên thiết bị này.</p><button data-a=wipe>Xoá toàn bộ dữ liệu</button><button data-a=diag style="margin-top:8px">Kiểm tra bộ nhận dạng</button><p class=note>Phiên bản ${VER}</p>`}
 function openSh(h){$('shc').innerHTML=h;$('sheet').hidden=false}
 const closeSh=()=>$('sheet').hidden=true;
 const A={
 go(b){go(b.dataset.v)},back(){go('lib')},back2(){go('vocab')},
-add(){openSh(`<h2>Thêm nội dung</h2><label>Tên<input id=nt placeholder="Ví dụ: Podcast số 12"></label><label>Audio hoặc video<input id=nm type=file accept="audio/*,video/*"></label><label>Phụ đề tiếng Trung (.srt / .vtt, bỏ trống để app tự nhận dạng giọng nói)<input id=nz type=file accept=".srt,.vtt"></label><label>Chất lượng nhận dạng (khi bỏ trống phụ đề)<select id=nq><option value=tiny>Nhanh, khoảng 40 MB</option><option value=base selected>Cân bằng, khoảng 75 MB</option><option value=small>Chính xác, khoảng 250 MB</option></select></label><label>Phụ đề tiếng Việt (.srt / .vtt, không bắt buộc)<input id=nv type=file accept=".srt,.vtt"></label><p class=note id=asr>File lưu ngay trên máy bạn, không tải lên server. Lần đầu nhận dạng sẽ tải mô hình về máy (cần mạng). Nên thử với đoạn ngắn 1 đến 2 phút trước.</p><div class=r><button data-a=cl>Huỷ</button><button class=pri data-a=save style="flex:1">Lưu vào thư viện</button></div>`)},
+add(){openSh(`<h2>Thêm nội dung</h2><label>Tên<input id=nt placeholder="Ví dụ: Podcast số 12"></label><label>Audio hoặc video<input id=nm type=file accept="audio/*,video/*"></label><label>Phụ đề tiếng Trung (.srt / .vtt, bỏ trống để app tự nhận dạng giọng nói)<input id=nz type=file accept=".srt,.vtt"></label><label>Chất lượng nhận dạng (khi bỏ trống phụ đề)<select id=nq><option value=tiny>Nhanh, khoảng 40 MB</option><option value=base selected>Cân bằng, khoảng 75 MB</option><option value=small>Chính xác, khoảng 250 MB</option></select></label><label>Phụ đề tiếng Việt (.srt / .vtt, không bắt buộc)<input id=nv type=file accept=".srt,.vtt"></label><p class=note id=asr>File lưu ngay trên máy bạn, không tải lên server. Lần đầu nhận dạng sẽ tải mô hình về máy (cần mạng). Nên thử với đoạn ngắn 1 đến 2 phút trước.</p><button data-a=diag style="width:100%;margin-bottom:10px">Kiểm tra bộ nhận dạng trên máy này</button><div class=r><button data-a=cl>Huỷ</button><button class=pri data-a=save style="flex:1">Lưu vào thư viện</button></div>`)},
 cl:closeSh,
 tr(b){translateItem(P.it).then(drawCh)},
 async save(){const z=$('nz').files[0];if(!z){toast('Cần file phụ đề tiếng Trung.');return}
@@ -232,7 +247,8 @@ else{toast('Chọn file audio/video hoặc file phụ đề.');return}
 if(!cues||!cues.length){say('Không thấy lời thoại tiếng Trung. Thử mức chất lượng cao hơn hoặc file rõ tiếng hơn.');return}
 if(v){const vr=parse(await v.text());cues.forEach(c=>{let b=null,d=1e9;vr.forEach(x=>{const k=Math.abs(x.s-c.s);if(k<d){d=k;b=x}});c.vi=b&&d<2?b.t:''})}
 const id='i'+Date.now();if(f)await idb('put',id,f);
-items.unshift({id,title:$('nt').value.trim()||(z||f).name.replace(/\.\w+$/,''),cues,m:!!f});sI();closeSh();render();toast('Đã thêm vào thư viện')}};
+items.unshift({id,title:$('nt').value.trim()||(z||f).name.replace(/\.\w+$/,''),cues,m:!!f});sI();closeSh();render();toast('Đã thêm vào thư viện')},
+diag(){diag()}};
 const C={q(el){Q=el.value;drawLib()},seek(el){m.currentTime=+el.value},rate(el){rate=+el.value;if(P&&P.media)m.playbackRate=rate},
 mean(el){const v=vocab.find(x=>x.id===el.dataset.i);if(v){v.vi=el.value;sV()}},
 zs(el){S.zhs=+el.value;$('zv').textContent=el.value;applyS()},ss(el){S.sms=+el.value;$('sw').textContent=el.value;applyS()}};
