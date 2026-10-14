@@ -100,7 +100,7 @@ if(r.status===429){toast('Hết lượt dịch hôm nay, mai thử lại.');brea
 if(!r.ok)throw 0;const d=await r.json();ids.forEach((i,j)=>it.cues[i].vi=d.lines[j]);sI();if(view==='play'&&P&&P.it===it)drawCues()}
 catch(e){toast('Dịch lỗi, thử lại sau.');break}}
 msg('')}
-let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
+const VER='2026.10.14-b';let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
 const TJS='https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js';
 async function getAsr(T,size,say){if(asrM[size])return asrM[size];
 const cb=p=>{if(p.status==='progress')say('Đang tải mô hình… '+Math.round(p.progress||0)+'%')};
@@ -164,7 +164,7 @@ if(!R.q.length){app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</but
 const v=vocab.find(x=>x.id===R.q[0]);
 app.innerHTML=`<header><button data-a=back2>‹ Từ vựng</button><span class=note style="flex:1;text-align:right">Còn ${R.q.length}</span></header><div class=card style="display:block;text-align:center;padding:28px 16px"><div class=zh style="font-size:calc(var(--zs)*1.6)">${esc(v.zh)}</div>${R.f?`<div class=py style="margin-top:8px">${esc(v.py)}</div><div style="margin-top:6px">${esc(v.vi||'(chưa có nghĩa, thêm ở màn Từ vựng)')}</div><div class=note style="margin-top:14px">${esc(v.ctx)}${v.cv?'<br>'+esc(v.cv):''}</div>`:''}</div>`+(R.f?`<div class=r><button style="flex:1" data-a=again>Chưa nhớ</button><button class=pri style="flex:1" data-a=good>Nhớ rồi</button></div>`:`<button class=pri style="width:100%" data-a=flip>Hiện đáp án</button>`)}
 function vMe(){nav();const tot=vocab.length,dn=vocab.filter(v=>v.lv>=3).length,p=tot?Math.round(dn/tot*100):0,due=vocab.filter(v=>v.due<=Date.now()).length;
-app.innerHTML=`<header><h1>Cá nhân</h1></header><div class=card style="gap:16px;padding:16px"><div class=ring style="background:conic-gradient(var(--ac) ${p}%,var(--sf2) 0)"><div><b>${p}%</b><small>đã thuộc</small></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">${[[items.length,'Nội dung'],[tot,'Đã lưu'],[dn,'Đã thuộc'],[due,'Đến hạn ôn']].map(([n,t])=>`<div class=stat><b>${n}</b><small>${t}</small></div>`).join('')}</div></div><h2>Hiển thị</h2><div class=card style="display:block;padding:16px"><div class=zh>我想学中文。</div><div class=py>Wǒ xiǎng xué Zhōngwén.</div><div class=vi>Mình muốn học tiếng Trung.</div></div><button class=set data-a=sub>Kiểu phụ đề, phông, màu<span>›</span></button><label>Cỡ chữ Hán: <b id=zv>${S.zhs}</b> px<input type=range min=18 max=48 value=${S.zhs} data-c=zs></label><label>Cỡ pinyin và tiếng Việt: <b id=sw>${S.sms}</b> px<input type=range min=12 max=24 value=${S.sms} data-c=ss></label><h2>Dữ liệu</h2><p class=note>Mọi thứ được lưu ngay trên thiết bị này.</p><button data-a=wipe>Xoá toàn bộ dữ liệu</button>`}
+app.innerHTML=`<header><h1>Cá nhân</h1></header><div class=card style="gap:16px;padding:16px"><div class=ring style="background:conic-gradient(var(--ac) ${p}%,var(--sf2) 0)"><div><b>${p}%</b><small>đã thuộc</small></div></div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">${[[items.length,'Nội dung'],[tot,'Đã lưu'],[dn,'Đã thuộc'],[due,'Đến hạn ôn']].map(([n,t])=>`<div class=stat><b>${n}</b><small>${t}</small></div>`).join('')}</div></div><h2>Hiển thị</h2><div class=card style="display:block;padding:16px"><div class=zh>我想学中文。</div><div class=py>Wǒ xiǎng xué Zhōngwén.</div><div class=vi>Mình muốn học tiếng Trung.</div></div><button class=set data-a=sub>Kiểu phụ đề, phông, màu<span>›</span></button><label>Cỡ chữ Hán: <b id=zv>${S.zhs}</b> px<input type=range min=18 max=48 value=${S.zhs} data-c=zs></label><label>Cỡ pinyin và tiếng Việt: <b id=sw>${S.sms}</b> px<input type=range min=12 max=24 value=${S.sms} data-c=ss></label><h2>Dữ liệu</h2><p class=note>Mọi thứ được lưu ngay trên thiết bị này.</p><button data-a=wipe>Xoá toàn bộ dữ liệu</button><p class=note>Phiên bản ${VER}</p>`}
 function openSh(h){$('shc').innerHTML=h;$('sheet').hidden=false}
 const closeSh=()=>$('sheet').hidden=true;
 const A={
@@ -238,6 +238,6 @@ mean(el){const v=vocab.find(x=>x.id===el.dataset.i);if(v){v.vi=el.value;sV()}},
 zs(el){S.zhs=+el.value;$('zv').textContent=el.value;applyS()},ss(el){S.sms=+el.value;$('sw').textContent=el.value;applyS()}};
 document.addEventListener('click',e=>{if(e.target.id==='sheet'){closeSh();return}const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b)});
 ['input','change'].forEach(ev=>document.addEventListener(ev,e=>{const c=e.target.dataset&&e.target.dataset.c;if(c&&C[c])C[c](e.target)}));
-if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){const had=navigator.serviceWorker.controller;let rl=0;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=1;location.reload()}});navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{})}
 applyS();render();
 </script></body></html>
