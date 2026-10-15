@@ -90,7 +90,7 @@ const st=v=>v.lv?v.lv<3?'Đang ôn':'Thuộc':'Mới';
 const T=s=>s.replace(',','.').split(':').map(parseFloat).reduce((a,v)=>a*60+v,0);
 function parse(x){return x.replace(/\r/g,'').split(/\n\s*\n/).map(b=>{const l=b.split('\n'),k=l.findIndex(z=>z.includes('-->'));if(k<0)return null;const p=l[k].split('-->');return{s:T(p[0].trim()),e:T(p[1].trim().split(/\s/)[0]),t:l.slice(k+1).join(' ').replace(/<[^>]+>/g,'').trim()}}).filter(c=>c&&c.t)}
 const speak=t=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=rate;speechSynthesis.speak(u)};
-const PROXY_URL='';
+const PROXY_URL='https://faying-api.job-teps.workers.dev';
 async function translateItem(it){
 if(!PROXY_URL){toast('Chưa cấu hình máy chủ dịch (PROXY_URL).');return}
 const todo=it.cues.map((c,i)=>i).filter(i=>!it.cues[i].vi);
@@ -100,7 +100,7 @@ if(r.status===429){toast('Hết lượt dịch hôm nay, mai thử lại.');brea
 if(!r.ok)throw 0;const d=await r.json();ids.forEach((i,j)=>it.cues[i].vi=d.lines[j]);sI();if(view==='play'&&P&&P.it===it)drawCues()}
 catch(e){toast('Dịch lỗi, thử lại sau.');break}}
 msg('')}
-const VER='2026.10.14-g',IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
+const VER='2026.10.14-h',IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);let Q='',LF='Tất cả',tts=0,cu=null,asrBusy=0,asrM={};
 const TJS='https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js';
 const MN={proxy:'nền',main:'thường',gpu:'GPU'};
 const keepAwake=async()=>{try{return await navigator.wakeLock.request('screen')}catch(e){return null}};
